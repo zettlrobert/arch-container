@@ -25,9 +25,11 @@ function startDevContainerInKitty () {
   # open remote kitty window running bash
   local openRemoteKitty="kitty @ launch --title dev --keep-focus --type=os-window bash"
   # local showContainer="kitty @ send-text --match title:dev $(docker ps)\\x0d"
-  local enterDev="kitty @ send-text --match title:dev docker exec -it --user mobilehead dev-con /bin/zsh '\n'"
+  local startContainer="docker compose up -d"
+  local enterDev="kitty @ send-text --match title:dev docker exec -it --user mobilehead arch-container /bin/zsh '\n'"
 
   eval "${openRemoteKitty}"
+  # eval "${startContainer}"
   eval "${enterDev}"
   exit
 }
@@ -36,7 +38,7 @@ if [ "$(uname)"  == "Darwin" ]; then
   echo $using_mac
   # Mac specific definitions
 
-  terminal=''
+  terminal='
   # Check if brew is avaialabe
   no; exit and tell them to setup there device for work
   yes; continue
