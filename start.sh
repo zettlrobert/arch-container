@@ -27,13 +27,8 @@ function startDevContainerInKitty () {
   # local showContainer="kitty @ send-text --match title:dev $(docker ps)\\x0d"
   local enterDev="kitty @ send-text --match title:dev docker exec -it --user mobilehead dev-con /bin/zsh '\n'"
 
-
-
-
-
   eval "${openRemoteKitty}"
   eval "${enterDev}"
-
   exit
 }
 
@@ -55,18 +50,13 @@ if [ "$(uname)" == "Linux" ]; then
   echo $using_linux
   # Linux specific definitions
 
-  terminal=''
   # startDevContainer "kitty"
   startDevContainerInKitty
 
   # Check for kitty
-
   # Check gnome-terminal
-
   # xterm-256color
-
   # Check for other terminals
-
   # ==> 
 fi
 
