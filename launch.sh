@@ -18,7 +18,7 @@ function assembleKittyLaunchCommand() {
     fi
 
     if [[ -n ${DARWIN} ]]; then
-	  local startNewKitty="kitty -e &disown --hold zsh -c '${command}; ${SHELL}'"
+	  local startNewKitty="kitty -e --hold zsh -c '${command}; ${SHELL}' &disown"
     fi
     
 	LAUNCH=${startNewKitty}
