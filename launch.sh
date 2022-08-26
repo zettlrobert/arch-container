@@ -12,7 +12,15 @@ declare LINUX
 # Assemble the kitty launch command
 function assembleKittyLaunchCommand() {
 	local command=$1
-	local startNewKitty="kitty -e --detach --hold zsh -c '${command}; ${SHELL}'"
+
+    if [[ -n ${LINUX} ]]; then
+	  local startNewKitty="kitty -e --detach --hold zsh -c '${command}; ${SHELL}'"
+    fi
+
+    if [[ -n ${DARWIN} ]]; then
+	  local startNewKitty="kitty -e &disown --hold zsh -c '${command}; ${SHELL}'"
+    fi
+    
 	LAUNCH=${startNewKitty}
 	return 0
 }
@@ -57,11 +65,13 @@ inferSystemEnvrionment() {
 	checkForLinux
 }
 
+# Mac only functionality
 startOnDarwin() {
 	echo "${using_mac}"
 	startDevContainerInKitty
 }
 
+# Linux - Sweet Home
 startOnLinux() {
 	echo "${using_linux}"
 	startDevContainerInKitty
