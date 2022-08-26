@@ -1,16 +1,12 @@
-# bash is the default shell
 FROM archlinux:latest
 
-RUN pacman -Syy
+RUN pacman -Syy --noconfirm
 
 # Build Variables
 # pass from env file
 ARG USER_NAME="mobilehead"
 ARG USER_PASSWORD="password"
 ARG ROOT_PASSWORD="root"
-
-# Setup default working directory for ${USER_NAME} - will contain all files
-# WORKDIR /home/${USER_NAME}
 
 # Set password for root user add to wheel group
 RUN echo "root:${ROOT_PASSWORD}" | chpasswd
@@ -50,6 +46,7 @@ RUN usermod -aG wheel ${USER_NAME}
 # Allow members of the wheel group to use root privileges 
 RUN echo '%wheel ALL=(ALL) ALL' > /etc/sudoers
 
+# Setup workdir for user
 WORKDIR /home/${USER_NAME}
 
 # Run future commands as `${USER_NAME}` and not root
@@ -62,7 +59,7 @@ RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master
 ARG OH_MY_ZSH_THEME="af-magic"
 RUN sed -i s/^ZSH_THEME=".\+"$/ZSH_THEME=\"${OH_MY_ZSH_THEME}\"/g ~/.zshrc
 
-# Useful oh-my-zsh plugins
+# Insxtall useful oh-my-zsh plugins
 RUN git clone https://github.com/zsh-users/zsh-autosuggestions ./.oh-my-zsh/custom/plugins/zsh-autosuggestions
 RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ./.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 ARG ZSH_PLUGINS="git, zsh-autosuggestions, zsh-syntax-highlighting"
@@ -75,19 +72,22 @@ RUN echo ${USER_PASSWORD} | sudo -S chown -R ${USER_NAME}:${USER_NAME} /opt/yay-
 RUN cd /opt/yay-bin && makepkg -s 
 RUN echo "${USER_PASSWORD}" | sudo -S pacman -U /opt/yay-bin/yay-bin-*.pkg.tar.zst --noconfirm
 
-# yay configuration 
+# Jguer/yay configuration 
 # generate development package database for *-git packages that were installed withnout yay
 RUN yay -Y --gendb
 
 # Check for updates regarding development packages
-RUN echo "${USER_PASSWORD}" | sudo -S yay -Syu --devel
+RUN echo "${USER_PASSWORD}" | sudo -S yay -Syu --devel --noconfirm
 
 # Enalbe development package update permanently when running yay
-RUN yay -Y --devel --save
+RUN yay -Y --devel --save --noconfirm
 
-# alias
+# aliases
 RUN echo "alias ls='exa'" >> ~/.zshrc
 RUN echo "alias lsa='exa --icons --long -a --group --header --bytes'" >> ~/.zshrc
 RUN echo "alias tree='exa --icons -T'" >> ~/.zshrc
+RUN echo "alias gl='git log --oneline --graph'"
+RUN echo "alias gl1='git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all'"
+RUN echo "alias gl2='git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all'"
 
 RUN echo "DEV-CONTAINER" | figlet
