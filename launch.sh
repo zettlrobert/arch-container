@@ -68,6 +68,7 @@ startOnLinux() {
 }
 
 launch() {
+    inferSystemEnvrionment
 	if [[ -n ${LINUX} ]]; then
 		startOnLinux
 		return 0
