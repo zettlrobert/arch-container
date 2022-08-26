@@ -8,65 +8,46 @@ SYSTEM_UNAME="$(uname)"
 using_linux="You are using Linux!"
 using_mac="You are using Mac"
 
-# echo "Your System Terminal: $SYSTEM_TERM"
-# echo "Path: $PATH_TO_TERM"
-# echo "System Architectgure: $SYSTEM_UNAME"
+# Initialize Start Variable
+declare LAUNCH
 
-# Function to Start new Termnail + pipe docker start command into that new terminal 'as start command'
-function startDevContainer () {
-  local terminal=${1}
-  local command="echo "Hello World""
-  echo "startDevContainer with: $1"
-
-  eval "${command} | ${terminal}"
-} 
+function assembleKittyLaunchCommand () {
+  local command=$1
+  local startNewKitty="kitty -e --detach --hold zsh -c '${command}; ${SHELL}'"
+  START_COMMAND=${startNewKitty}
+  return 0
+}
 
 function startDevContainerInKitty () {
-  # open remote kitty window running bash
-  local openRemoteKitty="kitty @ launch --title dev --keep-focus --type=os-window bash"
-  # local showContainer="kitty @ send-text --match title:dev $(docker ps)\\x0d"
-  local startContainer="docker compose up -d"
-  local enterDev="kitty @ send-text --match title:dev docker exec -it --user mobilehead arch-container /bin/zsh '\n'"
+  # start/build the container with docker compose
+  local startDevContainer="docker compose up -d"
 
-  eval "${openRemoteKitty}"
-  # eval "${startContainer}"
-  eval "${enterDev}"
-  exit
+  # enter the running container
+  local enterContainer="docker exec -it --user mobilehead arch-container /bin/zsh"
+
+  # launch new kitty terminal and execute enterContainer command
+  assembleKittyLaunchCommand "${enterContainer}"
+
+  # Wait until container is started/build before proceeding
+  until (eval "${startDevContainer}"); do sleep 1; done; 
+
+  # Launch a new terminal window singedinto the container
+  eval "${LAUNCH}"
+  exit 0
 }
 
 if [ "$(uname)"  == "Darwin" ]; then
   echo $using_mac
-  # Mac specific definitions
-
-  terminal='
-  # Check if brew is avaialabe
-  no; exit and tell them to setup there device for work
-  yes; continue
-
-  # Install kitty/iterm2 with brew
-
-  # Use kitty/iaterm2 to execute startDevContainer(terminal)
+  # Test if kitty is availalbe
+  # Install kitty
 fi
 
 if [ "$(uname)" == "Linux" ]; then
   echo $using_linux
-  # Linux specific definitions
-
-  # startDevContainer "kitty"
+  # Check if kitty is availalabe
   startDevContainerInKitty
-
-  # Check for kitty
-  # Check gnome-terminal
-  # xterm-256color
-  # Check for other terminals
-  # ==> 
 fi
 
-# Open Terminal in new Window
-
-# Start new terminal Linux
-# - x-terminal-emulator
-# - name of terminal emulator
-# - deepin-terminal-gtk
-
-# Start new terminal on mac
+# TODO - Optional
+# Ask user if image should be rebuild
+# Share variables to configure docker and the script
