@@ -13,14 +13,14 @@ declare LINUX
 function assembleKittyLaunchCommand() {
 	local command=$1
 
-    if [[ -n ${LINUX} ]]; then
-	  local startNewKitty="kitty -e --detach --hold zsh -c '${command}; ${SHELL}'"
-    fi
+	if [[ -n ${LINUX} ]]; then
+		local startNewKitty="kitty -e --detach --hold zsh -c '${command}; ${SHELL}'"
+	fi
 
-    if [[ -n ${DARWIN} ]]; then
-	  local startNewKitty="kitty -e --hold zsh -c '${command}; ${SHELL}' &disown"
-    fi
-    
+	if [[ -n ${DARWIN} ]]; then
+		local startNewKitty="kitty -e --hold zsh -c '${command}; ${SHELL}' &disown"
+	fi
+
 	LAUNCH=${startNewKitty}
 	return 0
 }
@@ -78,7 +78,7 @@ startOnLinux() {
 }
 
 launch() {
-    inferSystemEnvrionment
+	inferSystemEnvrionment
 	if [[ -n ${LINUX} ]]; then
 		startOnLinux
 		return 0
@@ -95,5 +95,6 @@ launch() {
 launch
 
 # TODO - Optional
+# TODO - check for kitty availability
 # Ask user if image should be rebuild
 # Share variables to configure docker and the script

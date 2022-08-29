@@ -5,6 +5,8 @@ Use it as the base for your team to run scripts and commands through it and ensu
 
 This container heavily relies on the `docker-compose` file, networking, volumes and ports have to be adjusted to work with your projects.
 
+**Do NOT use this setup in production**
+
 ## What is provided
 
 I provide a Dockerfile, to set up an Arch Linux Container with a root and regular user with sudo permissions.
@@ -32,3 +34,4 @@ For having easy access to the Docker container a script is provided, which launc
   - `user-name`
   - `user-password`
 - [ ] prompt for an alias and append it to your shell
+- [ ] passalong devenvrionment variables+provide script to show key values of said values

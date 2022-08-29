@@ -69,8 +69,10 @@ RUN echo "plugins=($ZSH_PLUGINS)" >> ~/.zshrc
 # Install yay arch user repository helper with github generated binaries
 RUN echo ${USER_PASSWORD} | sudo -S git clone https://aur.archlinux.org/yay-bin.git /opt/yay-bin
 RUN echo ${USER_PASSWORD} | sudo -S chown -R ${USER_NAME}:${USER_NAME} /opt/yay-bin
-RUN cd /opt/yay-bin && makepkg -s 
+WORKDIR /opt/yay-bin
+RUN makepkg -s 
 RUN echo "${USER_PASSWORD}" | sudo -S pacman -U /opt/yay-bin/yay-bin-*.pkg.tar.zst --noconfirm
+WORKDIR /home/${USER_NAME}
 
 # Jguer/yay configuration 
 # generate development package database for *-git packages that were installed withnout yay
@@ -81,6 +83,11 @@ RUN echo "${USER_PASSWORD}" | sudo -S yay -Syu --devel --noconfirm
 
 # Enalbe development package update permanently when running yay
 RUN yay -Y --devel --save --noconfirm
+
+# Install community packages and pass along the password to every yay used sudo process
+RUN echo "${USER_PASSWORD}" | yay -S --sudoflags -S \
+    mongodb-tools-bin \
+    --noconfirm
 
 # aliases
 RUN echo "alias ls='exa'" >> ~/.zshrc

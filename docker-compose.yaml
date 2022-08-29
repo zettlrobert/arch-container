@@ -6,3 +6,10 @@ services:
       dockerfile: ./Dockerfile
     stdin_open: true
     tty: true
+    networks:
+      - playground-network
+
+networks:
+  playground-network:
+    name: playground-network
+    driver: bridge
