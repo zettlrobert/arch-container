@@ -87,6 +87,7 @@ RUN yay -Y --devel --save --noconfirm
 # Install community packages and pass along the password to every yay used sudo process
 RUN echo "${USER_PASSWORD}" | yay -S --sudoflags -S \
     mongodb-tools-bin \
+    ttf-juliamono \
     --noconfirm
 
 # update the tldr cache

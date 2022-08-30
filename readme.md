@@ -19,6 +19,9 @@ For having easy access to the Docker container a script is provided, which launc
 - [docker](https://www.docker.com/)
 - [docker compose](https://docs.docker.com/compose/install/)
 
+### Recommended
+- an installed nerdfont https://www.nerdfonts.com/
+
 ## Usage
 
 - adjust the variable values in the Dockerfile to fit your requirements
