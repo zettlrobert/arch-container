@@ -96,7 +96,7 @@ RUN tldr --update
 RUN echo "alias ls='exa'" >> ~/.zshrc
 RUN echo "alias lsa='exa --icons --long -a --group --header --bytes'" >> ~/.zshrc
 RUN echo "alias tree='exa --icons -T'" >> ~/.zshrc
-RUN echo "alias gl='git log --oneline --graph'" >> -/.zshrc
+RUN echo "alias gl='git log --oneline --graph'" >> ~/.zshrc
 RUN echo "alias gl1='git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all'" >> ~/.zshrc
 RUN echo "alias gl2='git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all'" >> ~/.zshrc
 
