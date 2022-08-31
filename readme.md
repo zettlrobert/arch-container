@@ -20,12 +20,14 @@ For having easy access to the Docker container a script is provided, which launc
 - [docker compose](https://docs.docker.com/compose/install/)
 
 ### Recommended
+
 - an installed nerdfont https://www.nerdfonts.com/
 
 ## Usage
 
 - adjust the variable values in the Dockerfile to fit your requirements
 - run `launch.sh` inside the cloned directory
+- run `launch.sh --new` if the image and containers should be completely recrated !DANGER you will lose whatever you did in the container.  
 - hint: if you use this repo as a submodule in your project, ensure that the paths are set up correctly.
 
 ## Plans
