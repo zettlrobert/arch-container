@@ -1,8 +1,15 @@
 #!/bin/bash
-# Output
+
+# Arugments passed to script
+# TODO: Error out additoinal arguments or itterate over all provided arguments and discard not supported ones
+arg1=$1
+
+# Output Strings
 not_supported="Your architecture is currently not supported by this script"
 
-arg1=$1
+# TODO: Actually get these values form an env file - or input
+CONTAINER_NAME="arch-container"
+USER_NAME="mobilehead"
 
 # Initialize Start Variable
 declare LAUNCH
@@ -14,12 +21,23 @@ commandExists() {
 	commandToTest="$1"
 
 	if ! command -v "${commandToTest}" &>/dev/null; then
-		echo -e "[CHECK]: FAIL\t\t ""${commandToTest}"" required but it's not installed. Aborting."
+		echo -e "[CHECK]:\tFAIL\t\t ""${commandToTest}"" required but it's not installed. Aborting."
 		exit 1
 	fi
 
-	echo -e "[CHECK]: OK\t\t ${commandToTest} exists, continue"
+	echo -e "[CHECK]:\tOK\t\t ${commandToTest} exists, continue"
 	return 0
+}
+
+# Stop container + delete image
+stopContainerAndDeleteImage() {
+	echo "Deleting existing container + image..."
+
+	local stopContainer="docker stop ${CONTAINER_NAME}"
+	local removeImage="docker rmi ${CONTAINER_NAME}:latest"
+
+	eval "${stopContainer}"
+	eval "${removeImage}"
 }
 
 # Assemble the kitty launch command
@@ -38,6 +56,7 @@ function assembleKittyLaunchCommand() {
 	return 0
 }
 
+# Build the image and stat the container
 function startDevContainerInKitty() {
 	# start/build the container with docker compose
 	local startDevContainer="docker compose up -d"
@@ -47,13 +66,19 @@ function startDevContainerInKitty() {
 
 	# enter the running container
 	# TODO: pass in user prompt variables
-	local enterContainer="docker exec -it --user mobilehead arch-container /bin/zsh"
+	local enterContainer="docker exec -it --user ${USER_NAME} ${CONTAINER_NAME} /bin/zsh"
 
 	# launch new kitty terminal and execute enterContainer command
 	assembleKittyLaunchCommand "${enterContainer}"
 
 	if [[ ${arg1} == "--new" ]]; then
+		# Remove all container and image
+		stopContainerAndDeleteImage
+
+		# Wait until the image is built
 		until (eval "${rebuildImage}"); do sleep 1; done
+
+		# Enter the newly created container
 		eval "${LAUNCH}"
 		exit 0
 	fi
@@ -70,7 +95,7 @@ function startDevContainerInKitty() {
 checkForDarwin() {
 	if [[ "$(uname)" == "Darwin" ]]; then
 		DARWIN=true
-		echo "[SYSTEM]: Mac/Darwin"
+		echo "[SYSTEM]:\tMac/Darwin"
 	fi
 	return 0
 }
@@ -78,7 +103,7 @@ checkForDarwin() {
 checkForLinux() {
 	if [[ "$(uname)" == "Linux" ]]; then
 		LINUX=true
-		echo -e "[SYSTEM]: Linux"
+		echo -e "[SYSTEM]:\tLinux"
 	fi
 }
 
@@ -86,6 +111,7 @@ checkForLinux() {
 inferSystemEnvrionment() {
 	checkForDarwin
 	checkForLinux
+
 	# Check prerequesites, script will exit if not availalbe.
 	commandExists kitty
 	commandExists docker

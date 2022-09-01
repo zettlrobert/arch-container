@@ -1,6 +1,6 @@
 # Note make the script folder availalbe in the container
 services:
-  dev-con:
+  arch-container:
     container_name: arch-container
     build:
       dockerfile: ./Dockerfile
