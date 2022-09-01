@@ -38,6 +38,8 @@ stopContainerAndDeleteImage() {
 
 	eval "${stopContainer}"
 	eval "${removeImage}"
+
+    return 0
 }
 
 # Assemble the kitty launch command
@@ -73,11 +75,13 @@ function startDevContainerInKitty() {
 
 	if [[ ${arg1} == "--new" ]]; then
 		# Remove all container and image
-		stopContainerAndDeleteImage
+        until (stopContainerAndDeleteImage); do sleep 1; done
 
 		# Wait until the image is built
 		until (eval "${rebuildImage}"); do sleep 1; done
 
+        # Stat the container
+        until (eval "${startDevContainer}"); do sleep 1; done
 		# Enter the newly created container
 		eval "${LAUNCH}"
 		exit 0
